@@ -4,8 +4,8 @@
 #include <MPU6050.h> 
 
 // --- CONFIG ---
-const char* SSID     = "iPhone";
-const char* PASSWORD = "4lv4r0.WIFI.2003";
+const char* SSID     = "Nome da Rede";
+const char* PASSWORD = "Password";
 const char* PC_IP    = "172.20.10.6";  // IP do teu PC na rede
 const int   UDP_PORT = 4210;
 const char* NODE_ID  = "esterno";       

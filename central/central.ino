@@ -1,15 +1,18 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
-#include <Chirale_TensorFlowLite.h>
-#include "tensorflow/lite/micro/all_ops_resolver.h"
+
+// ===================== TFLITE MICRO (ESP32 BUILT-IN) =====================
+// Uses libespressif__esp-tflite-micro.a bundled with the ESP32 core.
+// Do NOT install the Chirale_TensorFlowLite library — it duplicates these
+// symbols and causes "multiple definition" link errors.
 #include "tensorflow/lite/micro/micro_interpreter.h"
 #include "tensorflow/lite/micro/micro_mutable_op_resolver.h"
 #include "tensorflow/lite/schema/schema_generated.h"
 
 // ===================== MODEL VERSION =====================
 // Uncomment ONE of the two lines below:
-#include "model.h"            // v1 — original architecture, 3 classes
-// #include "model_finetuned.h" // v2 — BN + L2 + Dropout 0.5, 3 classes
+// #include "model.h"            // v1 — original architecture, 3 classes
+#include "model_finetuned.h" // v2 — BN + L2 + Dropout 0.5, 3 classes
 
 // ===================== CONFIG WIFI =====================
 const char* SSID     = "iPhone";
@@ -77,15 +80,15 @@ void setup() {
   udp.begin(UDP_PORT);
 
   // swap this line when switching model:
-  model = tflite::GetModel(model_tflite);           // v1
-  // model = tflite::GetModel(model_finetuned_tflite); // v2
+  //model = tflite::GetModel(model_tflite);           // v1
+  model = tflite::GetModel(model_finetuned_tflite); // v2
 
   if (model->version() != TFLITE_SCHEMA_VERSION) {
     Serial.println("Model schema mismatch");
     while (1);
   }
 
-  static tflite::MicroMutableOpResolver<7> resolver; // load only the operations the model uses to save memory
+  static tflite::MicroMutableOpResolver<10> resolver;
   resolver.AddConv2D();
   resolver.AddMean();
   resolver.AddFullyConnected();
@@ -93,6 +96,9 @@ void setup() {
   resolver.AddReshape();
   resolver.AddQuantize();
   resolver.AddExpandDims();
+  resolver.AddMul();
+  resolver.AddAdd();
+  resolver.AddDequantize();
 
   // initialize inference and prepare in/out pointers to runInference()
   static tflite::MicroInterpreter static_interp(
@@ -143,6 +149,7 @@ void loop() {
   int len = udp.read(packetBuffer, 255);
   if (len < 0) len = 0;
   packetBuffer[len] = '\0';
+  // Serial.printf("RX from %s: %s\n", udp.remoteIP().toString().c_str(), packetBuffer); // DEBUG
 
   char* parts[8];
   int i = 0;

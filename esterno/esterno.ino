@@ -4,11 +4,11 @@
 #include <MPU6050.h> 
 
 // --- CONFIG ---
-const char* SSID     = "Vodafone-4516EF_2.4G";
-const char* PASSWORD = "eCkmCpt8vjsBKwdc";
-const char* PC_IP    = "192.168.1.199";  // IP do teu PC na rede
+const char* SSID     = "iPhone";
+const char* PASSWORD = "4lv4r0.WIFI.2003";
+const char* PC_IP    = "172.20.10.6";  // IP do teu PC na rede
 const int   UDP_PORT = 4210;
-const char* NODE_ID  = "lombar";       
+const char* NODE_ID  = "esterno";       
 
 // --- CONFIG ---
 // const char* SSID     = "Iphone do joel";

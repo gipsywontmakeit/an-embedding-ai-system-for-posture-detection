@@ -15,8 +15,8 @@
 #include "model_finetuned.h" // v2 — BN + L2 + Dropout 0.5, 3 classes
 
 // ===================== CONFIG WIFI =====================
-const char* SSID     = "iPhone";
-const char* PASSWORD = "4lv4r0.WIFI.2003";
+const char* SSID     = "Nome da rede";
+const char* PASSWORD = "Password";
 const int   UDP_PORT = 4210;
 
 WiFiUDP udp;
